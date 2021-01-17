@@ -41,7 +41,7 @@ listings_df.drop('id',axis=1,inplace=True)
 
 # review & room_ype df for the bar plot
 reviews_type_df=listings_df.groupby(['city','date_ym','room_type']).sum().counts.reset_index()
-color_map_type={'Entire home':'#7F7F7F','Private room':'#86CE00','Hotel':'#FF7F0E','Shared':'#D62728'}
+color_map_type={'Entire home':'rgb(57,105,172)','Private room':'rgb(17,165,121)','Hotel':'rgb(242,183,1)','Shared':'rgb(127,60,141)'}
 reviews_type_df['color']=reviews_type_df.room_type.map(color_map_type)
 
 # price & room_type df for the line plot
@@ -138,10 +138,10 @@ fig_hbar.update_layout(
         selectionrevision=True,
         height=150,
         # width=500,
-        margin={"l": 10, "r": 10, "t": 10, "b": 10},
+        margin={"l": 10, "r": 10, "t": 5, "b": 5},
         xaxis={
             # 'type': 'log',
-            # 'title': {"text": "Count",},
+            'title': {"text": "Listing Counts",'font':{'size':12}},
             # 'range': [0, np.log10(15000)],
             'automargin': True,
         },
@@ -177,10 +177,12 @@ fig_rbar=go.Figure()
 fig_rbar.update_layout(
     template=template,
     barmode='stack',
-    margin={"l": 10, "r": 10, "t": 10, "b": 10},
-    height=250,
-    yaxis={'title':{'text':'Reviews'},'automargin':True},
-    legend=dict(orientation='h',y=-0.24, yanchor='bottom', xanchor='left', x=0,
+    margin={"l": 10, "r": 10, "t": 5, "b": 5},
+    height=220,
+    xaxis_tickfont_size=10,
+    yaxis={'title':{'text':'Number of Reviews/Month','font':{'size':12}},'automargin':True},
+    yaxis_tickfont_size=10,
+    legend=dict(orientation='h',y=-0.25, yanchor='bottom', xanchor='left', x=0,
                 font=dict(
                     # family="Courier",
                     size=9,
@@ -202,10 +204,12 @@ fig_line=go.Figure()
 fig_line.update_layout(
     template=template,
     barmode='stack',
-    margin={"l": 10, "r": 10, "t": 10, "b": 10},
-    height=250,
-    yaxis={'title':{'text':'Price/day ($)'},'automargin':True},
-    legend=dict(orientation='h',y=-0.24,yanchor='bottom',xanchor='left',x=0,
+    margin={"l": 10, "r": 10, "t": 5, "b": 5},
+    height=220,
+    xaxis_tickfont_size=10,
+    yaxis_tickfont_size=10,
+    yaxis={'title':{'text':'Price/Day ($)','font':{'size':12}},'automargin':True},
+    legend=dict(orientation='h',y=-0.25,yanchor='bottom',xanchor='left',x=0,
                 font=dict(
                 # family="Courier",
                 size=9,
@@ -235,7 +239,7 @@ app.layout=html.Div(
         html.Div(
             children=[
                 html.H4(
-                    children='Reviews',
+                    children='Listing Counts By Review Volumes',
                     className='container_title'
                 ),
                 dcc.Graph(id='review_slct',config={'displayModeBar': False}),
@@ -248,7 +252,7 @@ app.layout=html.Div(
         html.Div(
             children=[
                 html.H4(
-                    children='Locations',
+                    children='Listing Locations',
                     className='container_title'
                 ),
                 dcc.Dropdown(id='slct_city',
@@ -264,8 +268,10 @@ app.layout=html.Div(
                              style={'margin-bottom': '8px','background-color': 'transparent'},
                          ),
                 dcc.Graph(id='dynamic_map',config={'displayModeBar': False}),
-                html.Button('Play', id='animation_play', n_clicks=0,className='reset-button',style={'width':'10%','margin-right':'6px'}),
-                html.Button('Pause', id='animation_pause', n_clicks=0,className='reset-button',style={'width':'10%'}),
+                # html.Button('Play', id='animation_play', n_clicks=0,className='reset-button',style={'width':'10%','margin-right':'6px'}),
+                html.Button('Stepper', id='animation_step', n_clicks=0,className='reset-button',style={'width':'10%','margin-right':'6px'}),
+                # html.Button('Pause', id='animation_pause', n_clicks=0,className='reset-button',style={'width':'10%'}),
+                html.Button('Reset', id='animation_reset', n_clicks=0,className='reset-button',style={'width':'10%'}),
                 dcc.Slider(id='year_slider',
                                        min=0,
                                        max=11,
@@ -298,7 +304,7 @@ app.layout=html.Div(
                 html.Div(
                     children=[
                         html.H4(
-                            children='Reviews By Room Type',
+                            children='Monthly Reviews By Room Type',
                             className='container_title'
                         ),
                         dcc.Graph(id='review_barplot',config = config_bar)
@@ -323,7 +329,7 @@ app.layout=html.Div(
             children=[
                 dcc.Interval(
                     id='interval-component',
-                    interval=1.5*1000, # in milliseconds
+                    interval=1*1000, # in milliseconds
                     max_intervals=11,
                     disabled=True,
                     n_intervals=0
@@ -372,6 +378,7 @@ def change_year_city(selected_year, city,review_cat):
     fig_hbar=update_hbar(df,review_list)
 
     dff = df[df['counts_cat'].isin(selected_review)]
+
     fig_map=update_map(dff)
     fig_map.update_layout(
         overwrite=True,
@@ -380,22 +387,43 @@ def change_year_city(selected_year, city,review_cat):
     )
     return fig_hbar,fig_map
 
+# @app.callback(
+#     [Output('interval-component','disabled'),
+#      Output('interval-component','n_intervals')],
+#     [Input('animation_play','n_clicks'),
+#     Input('animation_pause','n_clicks')],
+#     State('year_slider','value'),
+#     prevent_initial_call=True
+# )
+# def animation_trigger(m,n,year_slct):
+#     '''
+#     play and pause button for the animation
+#     '''
+#     changed_id=[p['prop_id'] for p in dash.callback_context.triggered][0]
+#     intervals = year_slct
+#     if 'animation_play' in changed_id:
+#         dis=False
+#     elif 'animation_pause' in changed_id:
+#         dis=True
+#     return dis,intervals
 @app.callback(
-    [Output('interval-component','disabled'),
-     Output('interval-component','n_intervals')],
-    [Input('animation_play','n_clicks'),
-    Input('animation_pause','n_clicks')],
+    Output('interval-component','n_intervals'),
+    [Input('animation_step','n_clicks'),
+    Input('animation_reset','n_clicks')],
     State('year_slider','value'),
     prevent_initial_call=True
 )
 def animation_trigger(m,n,year_slct):
+    '''
+    stepper and reset button
+    '''
     changed_id=[p['prop_id'] for p in dash.callback_context.triggered][0]
     intervals = year_slct
-    if 'animation_play' in changed_id:
-        dis=False
-    elif 'animation_pause' in changed_id:
-        dis=True
-    return dis,intervals
+    if 'animation_step' in changed_id:
+        step=intervals+1
+    elif 'animation_reset' in changed_id:
+        step=0
+    return step
 
 @app.callback(
     Output('year_slider','value'),
@@ -403,6 +431,9 @@ def animation_trigger(m,n,year_slct):
     prevent_initial_call=True
 )
 def animation(interval):
+    '''
+    sync year slider
+    '''
     value=interval
     return value
 

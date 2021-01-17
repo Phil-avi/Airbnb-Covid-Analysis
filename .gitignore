@@ -1,5 +1,5 @@
 .idea/
-data/process_data/
 .ipynb_checkpoints/
 .DS_Store
-notebook/
+credentials/Credentials.py
+

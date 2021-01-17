@@ -18,4 +18,5 @@ $ python app.py
 
 Then open the dashboard at the URL displayed by the command.
 # Preview
-
+The play and pause buttons have been changed to the stepper and reset buttons in live dashboard due to resource constraints
+![airbnb dashboard](https://github.com/Phil-avi/Airbnb-Covid-Analysis/blob/main/assets/airbnb.gif)

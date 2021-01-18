@@ -1,5 +1,5 @@
 # Airbnb-Covid-Analysis
-This repo contains an Airbnb Analysis [Dashboard](https://movie-recommendation-phil.herokuapp.com/) for presenting the impact of covid 19 on Airbnb hosts within Australia. Several factors including price, reviews, and locations were carefully studied.
+This repo contains an Airbnb Analysis [Dashboard](https://movie-recommendation-phil.herokuapp.com/) for presenting the impact of COVID-19 on Airbnb hosts within Australia. Several factors including price, reviews, and locations were carefully studied.
 
 # Technical Details
 * Data: Most data were scraped from Inside Airbnb and formed a folder with over 1000 files. These files contain information such as reviews, monthly snapshots of listings, and availabilities etc. To handle this fairly large dataset, [Dask](https://dask.org/) was used for parallel processing,

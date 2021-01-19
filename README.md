@@ -3,7 +3,7 @@ This repo contains an Airbnb Analysis [Dashboard](https://movie-recommendation-p
 
 # Technical Details
 * Data: Most data were scraped from Inside Airbnb and formed a folder with over 1000 files. These files contain information such as reviews, monthly snapshots of listings, and availabilities etc. To handle this fairly large dataset, [Dask](https://dask.org/) was used for parallel processing,
-* App: The dashboard was built with [Dash](https://dash.plotly.com/) and [Plotly](https://plotly.com), then deployed on [heroku](https://dashboard.heroku.com/apps) with gunicorn as the WSGI server.
+* App: The dashboard was built with [Dash](https://dash.plotly.com/) and [Plotly](https://plotly.com), then deployed on [Heroku](https://dashboard.heroku.com/apps) with gunicorn as the WSGI server.
 
 # Environment
 First, create a virtualenv or conda environment that includes the dependencies listed in the requirements.txt file.
